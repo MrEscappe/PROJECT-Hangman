@@ -5,17 +5,30 @@ class Hangman
 
   def initialize
     @words = File.read('words.txt').split
+    @letters = ('a'..'z').to_a
     @available_words = []
+    @random = ''
     random_word
-    player
-    render_display
+    start
+    
   end
 
-  def player
-    puts 'Hello! What do you like to be called?'
-    @name = gets.chomp
-    puts ''
-    puts "Hello #{@name}, Let's play Hangman!"
+  def start
+    @player_input = []
+    puts "Hi! Your word have #{@random.length} letters"
+    puts "\n"
+    puts 'Enter a letter:'
+    i = false
+    until i == true
+      input = gets.chomp.downcase
+      if /[a-z]{1}/.match?(input) && input.length == 1
+        i = true
+        @player_input = input
+        return @player_input
+      else
+        puts 'Please, input a letter'
+      end
+    end
   end
 
   def random_word
@@ -23,33 +36,12 @@ class Hangman
       i.downcase
       @available_words.push(i) if i.length >= 5 && i.length <= 12
     end
-    p @random = @available_words.sample
+    @random = @available_words.sample
   end
 
-  def player_guess
-    @player_input = []
-    i = false
-    puts "What's your guess?"
-    until i == true
-      input = gets.chomp.downcase
-      if /[a-zA-Z]/.match?(input)
-        i = true
-        @player_input = input.split('')
-        return @player_input
-      end
-    end
-  end
+  def player_guess; end
 
-  def render_display
-    render_five = Array.new(5, '_')
-    if @random.length == 5
-      puts '--------'
-      puts '|      |'
-      puts '|       '
-      puts "|#{render_five[0]} #{render_five[1]} #{render_five[2]} #{render_five[3]} #{render_five[4]} "
-    end
-
-  end
+  def def(render_display); end
 end
 
 game = Hangman.new
