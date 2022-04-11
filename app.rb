@@ -4,10 +4,8 @@ class Hangman
   attr_accessor :words, :available_words, :name, :random
 
   def initialize
-    @words = ['banana'] # File.read('words.txt').split
-    @available_words = []
+    @words = File.read('words.txt').split
     @random = []
-    @correct_guess = []
     random_word
     @lives = @random.length + 2
     start
@@ -23,25 +21,24 @@ class Hangman
   end
 
   def render
-    @random.length.times do
-      @board = @word_length += '_ '
-      @board
-    end
-    puts @board.to_s
+    @board = '_' * @random.size
+    puts @board
   end
 
   def render_game(last_guess)
     i = 0
     while i < @random.size
-      if p last_guess == @random[i]
-        @board[i] = @random[i]
-      end
+      @board[i] = @random[i] if last_guess == @random[i]
       i += 1
     end
   end
 
   def update_render
     puts @board
+    if @board == @random
+      puts 'YOU WON!!!'
+      exit
+    end
   end
 
   def player_input
@@ -79,11 +76,11 @@ class Hangman
   def guess
     if @lives > 1
       if @random.include?(@player_guess)
-        @correct_guess << @player_guess
+        puts ''
         puts 'Right letter!'
       else
         @lives -= 1
-        puts "Wrond letter! You have #{@lives} lives left."
+        puts "Wrong letter! You have #{@lives} lives left."
 
       end
 
@@ -92,10 +89,20 @@ class Hangman
       player_input
     else
       puts 'Too bad! You are out of lives!'
-      puts ''
+      puts "The secret word is #{random}!"
       puts 'GAME OVER!'
     end
   end
+
+  def save_method
+
+  end
+
+  def load_method
+
+  end
+
+
 end
 
 game = Hangman.new
