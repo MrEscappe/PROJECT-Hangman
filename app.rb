@@ -1,11 +1,15 @@
 # frozen_string_literal: true
 
+require 'json'
+
 class Hangman
   attr_accessor :words, :available_words, :name, :random
 
   def initialize
     @words = File.read('words.txt').split
+    @available_words = []
     @random = []
+    @player_guess = ''
     random_word
     @lives = @random.length + 2
     start
@@ -51,8 +55,10 @@ class Hangman
       case input
       when 'save'
         save_method
+        return
       when 'load'
         load_method
+        update_render
       end
       if /[a-z]{1}/.match?(input) && input.length == 1
         i = true
@@ -95,14 +101,23 @@ class Hangman
   end
 
   def save_method
-
+    json = JSON.generate({
+                           random: @random,
+                           player_guess: @player_guess,
+                           board: @board,
+                           lives: @lives
+                         })
+    File.open('save.txt', 'w') { |file| file.write(json) }
   end
 
   def load_method
+    load_game = JSON.parse(File.read('save.txt'))
 
+    @random = load_game['random']
+    @player_guess = load_game['player_guess']
+    @board = load_game['board']
+    @lives = load_game['lives']
   end
-
-
 end
 
 game = Hangman.new
